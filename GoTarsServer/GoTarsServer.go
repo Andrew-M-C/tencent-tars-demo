@@ -2,14 +2,13 @@ package main
 
 import (
 	"github.com/TarsCloud/TarsGo/tars"
-
-	"amc"
+	Amc "amc/GoTarsServer/Amc"
 )
 
-func main() { //Init servant
-	imp := new(GoImp)                                    //New Imp
-	app := new(amc.Go)                                 //New init the A Tars
-	cfg := tars.GetServerConfig()                               //Get Config File Object
-	app.AddServant(imp, cfg.App+"."+cfg.Server+".GoObj") //Register Servant
+func main() {
+	imp := new(GoImp)
+	app := new(Amc.Go)
+	cfg := tars.GetServerConfig()
+	app.AddServant(imp, cfg.App + "." + cfg.Server + ".GoTarsObj") //Register Servant
 	tars.Run()
 }
