@@ -25,6 +25,11 @@ func (imp *GoImp) GetTime(req *Amc.GetTimeReq, rsp *Amc.GetTimeRsp) (int32, erro
 		log.Info("Use default time format")
 		time_str = local_time.Format("01/02 15:04:05 2006")
 	} else {
+		/**
+		 * reference:
+		 * - [go 时间格式风格详解](https://my.oschina.net/achun/blog/142315)
+		 * - [Go 时间格式化和解析](https://www.kancloud.cn/itfanr/go-by-example/81698)
+		 */
 		log.Info(fmt.Sprintf("Got format string: %s", (*req).Time_fmt))
 		time_str = (*req).Time_fmt
 		time_str = strings.Replace(time_str, "YYYY", "2006", -1)
