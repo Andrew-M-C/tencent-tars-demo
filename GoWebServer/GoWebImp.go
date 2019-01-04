@@ -7,7 +7,6 @@ import (
 	"encoding/json"
 	"github.com/TarsCloud/TarsGo/tars"
 	amc "amc/GoTarsServer/Amc"
-	_ "github.com/TarsCloud/TarsGo/tars/util/rogger"
 )
 
 var comm *tars.Communicator
@@ -49,7 +48,7 @@ func HttpRootHandler(w http.ResponseWriter, r *http.Request) {
 
 	req := amc.GetTimeReq{}
 	rsp := amc.GetTimeRsp{}
-	req.Time_fmt = "YYMMDD hh:mm:ss"
+	req.Time_fmt = "YYYY-MM-DD hh:mm:ss"
 	var http_resp = HttpResp{}
 
 	comm.StringToProxy(obj, app)
