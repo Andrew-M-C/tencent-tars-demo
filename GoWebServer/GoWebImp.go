@@ -42,13 +42,13 @@ func HttpRootHandler(w http.ResponseWriter, r *http.Request) {
 	log.Info(fmt.Sprintf("[%s:%d] remote http request", remote_ip, remote_port))
 
 	comm = tars.NewCommunicator()
-	app := new(amc.Go)
+	app := new(amc.DateTime)
 	obj := "amc.GoTarsServer.GoTarsObj"
 	comm.SetProperty("locator", "tars.tarsregistry.QueryObj@tcp -h 10.0.4.11 -p 17890")
 
 	req := amc.GetTimeReq{}
 	rsp := amc.GetTimeRsp{}
-	req.Time_fmt = "YYYY-MM-DD hh:mm:ss"
+	req.TimeFmt = "YYYY-MM-DD hh:mm:ss"
 	var http_resp = HttpResp{}
 
 	comm.StringToProxy(obj, app)
@@ -58,10 +58,10 @@ func HttpRootHandler(w http.ResponseWriter, r *http.Request) {
 		http_resp.Msg = err.Error()
 		http_resp.Code = int(ret)
 	} else {
-		log.Debug(fmt.Sprintf("[%s:%d] Success, time %s", remote_ip, remote_port, rsp.Local_time_str))
+		log.Debug(fmt.Sprintf("[%s:%d] Success, time %s", remote_ip, remote_port, rsp.LocalTimeStr))
 		http_resp.Msg = "Hello, Tars-Go!"
-		http_resp.Timestamp = int64(rsp.Utc_timestamp)
-		http_resp.TimeStr = rsp.Local_time_str
+		http_resp.Timestamp = int64(rsp.UtcTimestamp)
+		http_resp.TimeStr = rsp.LocalTimeStr
 	}
 	http_resp.Client = fmt.Sprintf("%s:%d", remote_ip, remote_port)
 

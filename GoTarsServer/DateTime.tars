@@ -1,0 +1,18 @@
+module amc {
+    struct GetTimeReq
+    {
+        0 optional  string  timeFmt;
+    };
+
+    struct GetTimeRsp
+    {
+        0 require   long    utcTimestamp;   // UTC UNIX timestamp
+        1 require   long    localTimestamp;
+        2 require   string  localTimeStr;
+    };
+
+    interface DateTime
+    {
+        int GetTime(GetTimeReq req, out GetTimeRsp rsp);
+    };
+};
