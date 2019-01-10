@@ -23,19 +23,28 @@ var log = tars.GetLogger("service")
 
 func packageLogText(level string, file string, line int, function string, text string) string {
 	now := time.Now()
-	milisecs := int((now.UnixNano() - now.Unix() * 1e9) / 1e6)
+	microsecs := int((now.UnixNano() - now.Unix() * 1e9) / 1e3)
 	time_str := now.Local().Format("2006-01-02 15:04:05.")
 
 	var buffer bytes.Buffer
 	buffer.WriteString(time_str)
-	if (milisecs >= 100) {
-		buffer.WriteString(strconv.Itoa(milisecs))
-	} else if (milisecs >= 10) {
+	if (microsecs >= 100000) {
+		buffer.WriteString(strconv.Itoa(microsecs))
+	} else if (microsecs >= 10000) {
 		buffer.WriteString("0")
-		buffer.WriteString(strconv.Itoa(milisecs))
-	} else {
+		buffer.WriteString(strconv.Itoa(microsecs))
+	} else if (microsecs >= 1000) {
 		buffer.WriteString("00")
-		buffer.WriteString(strconv.Itoa(milisecs))
+		buffer.WriteString(strconv.Itoa(microsecs))
+	} else if (microsecs >= 100) {
+		buffer.WriteString("000")
+		buffer.WriteString(strconv.Itoa(microsecs))
+	} else if (microsecs >= 10) {
+		buffer.WriteString("0000")
+		buffer.WriteString(strconv.Itoa(microsecs))
+	} else {
+		buffer.WriteString("00000")
+		buffer.WriteString(strconv.Itoa(microsecs))
 	}
 
 	buffer.WriteString(" | ")
