@@ -7,10 +7,10 @@ import (
 	"encoding/json"
 	"github.com/TarsCloud/TarsGo/tars"
 	amc "amc/GoTarsServer/Amc"
+	log "github.com/Andrew-M-C/tencent-tars-demo/GoLogger"
 )
 
 var comm *tars.Communicator
-var log = tars.GetLogger("log")
 
 // HTTP return data
 // reference: [复合类型JSON / GO TYPES JSON - Author 品茶](https://www.kancloud.cn/zwhset/golang/363567)
