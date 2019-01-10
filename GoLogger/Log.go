@@ -15,10 +15,41 @@ import (
 	"path/filepath"
 	"bytes"
 	"strconv"
+	"time"
 	"github.com/TarsCloud/TarsGo/tars"
 )
 
 var log = tars.GetLogger("service")
+
+func packageLogText(level string, file string, line int, function string, text string) string {
+	now := time.Now()
+	milisecs := int((now.UnixNano() - now.Unix() * 1e9) / 1e6)
+	time_str := now.Local().Format("2006-01-02 15:04:05.")
+
+	var buffer bytes.Buffer
+	buffer.WriteString(time_str)
+	if (milisecs >= 100) {
+		buffer.WriteString(strconv.Itoa(milisecs))
+	} else if (milisecs >= 10) {
+		buffer.WriteString("0")
+		buffer.WriteString(strconv.Itoa(milisecs))
+	} else {
+		buffer.WriteString("00")
+		buffer.WriteString(strconv.Itoa(milisecs))
+	}
+
+	buffer.WriteString(" | ")
+	buffer.WriteString(file)
+	buffer.WriteString(" | Line ")
+	buffer.WriteString(strconv.Itoa(line))
+	buffer.WriteString(" | ")
+	buffer.WriteString(function)
+	buffer.WriteString("() | ")
+	buffer.WriteString(level)
+	buffer.WriteString(" | ")
+	buffer.WriteString(text)
+	return buffer.String()
+}
 
 func getCallerInfo(invoke_level int) (fileName string, line int, funcName string) {
 	funcName = "unknown_func"
@@ -43,40 +74,19 @@ func getCallerInfo(invoke_level int) (fileName string, line int, funcName string
 
 func Debug(text string) {
 	file, line, function := getCallerInfo(0);
-	var buffer bytes.Buffer
-	buffer.WriteString(file)
-	buffer.WriteString(", Line ")
-	buffer.WriteString(strconv.Itoa(line))
-	buffer.WriteString(", ")
-	buffer.WriteString(function)
-	buffer.WriteString("() - DEBUG - ")
-	buffer.WriteString(text)
-	log.Debug(buffer.String())
-	// fmt.Println(buffer.String())
+	log_msg := packageLogText("DEBUG", file, line, function, text)
+	log.Debug(log_msg)
+	// fmt.Println(log_msg)
 }
 
 func Info(text string) {
 	file, line, function := getCallerInfo(0);
-	var buffer bytes.Buffer
-	buffer.WriteString(file)
-	buffer.WriteString(", Line ")
-	buffer.WriteString(strconv.Itoa(line))
-	buffer.WriteString(", ")
-	buffer.WriteString(function)
-	buffer.WriteString("() - INFO  - ")
-	buffer.WriteString(text)
-	log.Debug(buffer.String())
+	log_msg := packageLogText("INFO ", file, line, function, text)
+	log.Info(log_msg)
 }
 
 func Error(text string) {
 	file, line, function := getCallerInfo(0);
-	var buffer bytes.Buffer
-	buffer.WriteString(file)
-	buffer.WriteString(", Line ")
-	buffer.WriteString(strconv.Itoa(line))
-	buffer.WriteString(", ")
-	buffer.WriteString(function)
-	buffer.WriteString("() - ERROR - ")
-	buffer.WriteString(text)
-	log.Debug(buffer.String())
+	log_msg := packageLogText("ERROR", file, line, function, text)
+	log.Error(log_msg)
 }
