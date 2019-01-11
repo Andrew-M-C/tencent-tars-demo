@@ -9,61 +9,67 @@ package log
 
 import (
 	"runtime"
-	_ "reflect"
-	_ "fmt"
+	// "reflect"
+	// "fmt"
 	"strings"
 	"path/filepath"
 	"bytes"
 	"strconv"
 	"time"
+	"sync"
 	"github.com/TarsCloud/TarsGo/tars"
+	rogger "github.com/TarsCloud/TarsGo/tars/util/rogger"
 )
 
-var log = tars.GetLogger("service")
+var log *rogger.Logger
+var once sync.Once
+var svcStr string
+// var log = tars.GetLogger("service")
+// var log = tars.GetRemoteLogger("service")
+
+/**
+ * reference: [Go 如何让函数只能被调用一次](https://blog.csdn.net/qq_36431213/article/details/83277009)
+ */
+func initLog() {
+	cfg := tars.GetServerConfig()
+	log = tars.GetRemoteLogger("service")
+	svcStr = cfg.App + "." + cfg.Server
+	log.Info("Log init")
+	return
+}
 
 func packageLogText(level string, file string, line int, function string, text string) string {
+	once.Do(initLog)
 	now := time.Now()
-	microsecs := int((now.UnixNano() - now.Unix() * 1e9) / 1e3)
-	time_str := now.Local().Format("2006-01-02 15:04:05.")
+	// microsecs := int((now.UnixNano() - now.Unix() * 1e9) / 1e3)
+	time_str := now.Local().Format("2006-01-02 15:04:05.000000")
 
 	var buffer bytes.Buffer
 	buffer.WriteString(time_str)
-	if (microsecs >= 100000) {
-		buffer.WriteString(strconv.Itoa(microsecs))
-	} else if (microsecs >= 10000) {
-		buffer.WriteString("0")
-		buffer.WriteString(strconv.Itoa(microsecs))
-	} else if (microsecs >= 1000) {
-		buffer.WriteString("00")
-		buffer.WriteString(strconv.Itoa(microsecs))
-	} else if (microsecs >= 100) {
-		buffer.WriteString("000")
-		buffer.WriteString(strconv.Itoa(microsecs))
-	} else if (microsecs >= 10) {
-		buffer.WriteString("0000")
-		buffer.WriteString(strconv.Itoa(microsecs))
-	} else {
-		buffer.WriteString("00000")
-		buffer.WriteString(strconv.Itoa(microsecs))
-	}
-
 	buffer.WriteString(" | ")
 	buffer.WriteString(file)
-	buffer.WriteString(" | Line ")
+	buffer.WriteString(", Line ")
 	buffer.WriteString(strconv.Itoa(line))
 	buffer.WriteString(" | ")
 	buffer.WriteString(function)
 	buffer.WriteString("() | ")
 	buffer.WriteString(level)
 	buffer.WriteString(" | ")
+	buffer.WriteString(svcStr)
+	buffer.WriteString(" | ")
 	buffer.WriteString(text)
+
+	// append tailing return character
+	if ('\n' != text[len(text) - 1]) {
+		buffer.WriteString("\n")
+	}
 	return buffer.String()
 }
 
 func getCallerInfo(invoke_level int) (fileName string, line int, funcName string) {
-	funcName = "unknown_func"
+	funcName = "FILE"
 	line = -1
-	fileName = "unknown_file"
+	fileName = "FUNC"
 	if invoke_level <= 0 {
 		invoke_level = 2
 	} else {
