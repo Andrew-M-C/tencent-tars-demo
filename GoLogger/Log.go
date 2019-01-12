@@ -63,6 +63,7 @@ func packageLogText(level string, file string, line int, function string, text s
 	if ('\n' != text[len(text) - 1]) {
 		buffer.WriteString("\n")
 	}
+	// fmt.Print(buffer.String())
 	return buffer.String()
 }
 

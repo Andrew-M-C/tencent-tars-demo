@@ -2,6 +2,7 @@ package main
 
 import (
 	"fmt"
+	"strings"
 	"strconv"
 	"net/http"
 	"encoding/json"
@@ -13,14 +14,20 @@ import (
 
 var comm *tars.Communicator
 
-// HTTP return data
-// reference: [复合类型JSON / GO TYPES JSON - Author 品茶](https://www.kancloud.cn/zwhset/golang/363567)
+/**
+ * HTTP return data
+ * reference:
+ * - [复合类型JSON / GO TYPES JSON - Author 品茶](https://www.kancloud.cn/zwhset/golang/363567)
+ * - [golang的http cookie用法](http://www.cnblogs.com/liangDream/p/5522516.html)
+ * - [golang web开发获取get、post、cookie参数](http://ju.outofmemory.cn/entry/93164)
+ */
 type HttpResp struct {
 	Msg			string	`json:"msg"`
 	Timestamp	int64	`json:"unix,omitempty"`
 	TimeStr 	string 	`json:"time,omitempty"`
 	Code		int		`json:"code,omitempty"`
 	Client		string	`json:"client,omitempty"`
+	User		string	`json:"user,omitempty"`
 }
 
 func getAddrFromRequest(r *http.Request) (ip string, port int) {
@@ -42,6 +49,7 @@ func HttpRootHandler(w http.ResponseWriter, r *http.Request) {
 	remote_ip, remote_port := getAddrFromRequest(r)
 	log.Info(fmt.Sprintf("[%s:%d] remote http request", remote_ip, remote_port))
 
+	// tars RPC
 	comm = tars.NewCommunicator()
 	app := new(amc.DateTime)
 	obj := "amc.GoTarsServer.GoTarsObj"
@@ -64,7 +72,21 @@ func HttpRootHandler(w http.ResponseWriter, r *http.Request) {
 		http_resp.Timestamp = int64(rsp.UtcTimestamp)
 		http_resp.TimeStr = rsp.LocalTimeStr
 	}
+
+	// Other return messages
 	http_resp.Client = fmt.Sprintf("%s:%d", remote_ip, remote_port)
+	user_cookie, err := r.Cookie("user")
+	if nil == err {
+		user := strings.ToLower(user_cookie.Value)
+		log.Debug("Cookie user: " + user);
+		if user != "anonymous" {
+			http_resp.User = user_cookie.Value
+		}
+	} else {
+		log.Debug("Create a default user cookie");
+		user_cookie = &http.Cookie{Name: "user", Value: "anonymous", HttpOnly: true, Secure: true, MaxAge: 0}
+		http.SetCookie(w, user_cookie)
+	}
 
 	w.Header().Set("Content-Type", "application/json;charset=utf-8")
 	http_str, err := json.Marshal(http_resp)
