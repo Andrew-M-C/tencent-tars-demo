@@ -45,7 +45,7 @@ func getAddrFromRequest(r *http.Request) (ip string, port int) {
 	return
 }
 
-func HttpHelloHandler(w http.ResponseWriter, r *http.Request) {
+func HttpHelloHandler(w http.ResponseWriter, info *HttpRequestInfo, r *http.Request) {
 	remote_ip, remote_port := getAddrFromRequest(r)
 	log.Info(fmt.Sprintf("[%s:%d] remote http request", remote_ip, remote_port))
 
