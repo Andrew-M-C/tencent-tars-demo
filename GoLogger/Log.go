@@ -60,9 +60,9 @@ func packageLogText(level string, file string, line int, function string, text s
 	buffer.WriteString(text)
 
 	// append tailing return character
-	if ('\n' != text[len(text) - 1]) {
-		buffer.WriteString("\n")
-	}
+	// if ('\n' != text[len(text) - 1]) {
+	// 	buffer.WriteString("\n")
+	// }
 	// fmt.Print(buffer.String())
 	return buffer.String()
 }
