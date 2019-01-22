@@ -9,7 +9,7 @@ import (
 	"github.com/TarsCloud/TarsGo/tars"
 	amc "amc/GoTarsServer/Amc"
 	//log "github.com/Andrew-M-C/tencent-tars-demo/GoLogger"
-	log "amc/GoLogger"
+	"amc/GoLogger/log"
 )
 
 var comm *tars.Communicator
@@ -33,7 +33,7 @@ type HttpResp struct {
 func getAddrFromRequest(r *http.Request) (ip string, port int) {
 	if true {
 		for key, value := range r.Header {
-			log.Debug(fmt.Sprintf("[%s] - %s", key, value[0]))
+			log.Debugf("[%s] - %s", key, value[0])
 		}
 	}
 	ip = r.Header.Get("X-Real-IP")
@@ -47,7 +47,7 @@ func getAddrFromRequest(r *http.Request) (ip string, port int) {
 
 func HttpRootHandler(w http.ResponseWriter, r *http.Request) {
 	remote_ip, remote_port := getAddrFromRequest(r)
-	log.Info(fmt.Sprintf("[%s:%d] remote http request", remote_ip, remote_port))
+	log.Infof("[%s:%d] remote http request", remote_ip, remote_port)
 
 	// tars RPC
 	comm = tars.NewCommunicator()
@@ -63,11 +63,11 @@ func HttpRootHandler(w http.ResponseWriter, r *http.Request) {
 	comm.StringToProxy(obj, app)
 	ret, err := app.GetTime(&req, &rsp)
 	if err != nil {
-		log.Error(fmt.Sprintf("[%s:%d] Error, msg: %s, ret: %d", remote_ip, remote_port, err.Error(), ret))
+		log.Errorf("[%s:%d] Error, msg: %s, ret: %d", remote_ip, remote_port, err.Error(), ret)
 		http_resp.Msg = err.Error()
 		http_resp.Code = int(ret)
 	} else {
-		log.Debug(fmt.Sprintf("[%s:%d] Success, time %s", remote_ip, remote_port, rsp.LocalTimeStr))
+		log.Debugf("[%s:%d] Success, time %s", remote_ip, remote_port, rsp.LocalTimeStr)
 		http_resp.Msg = "Hello, Tars-Go!"
 		http_resp.Timestamp = int64(rsp.UtcTimestamp)
 		http_resp.TimeStr = rsp.LocalTimeStr

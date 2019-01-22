@@ -5,34 +5,36 @@
 package main
 
 import (
-	_ "fmt"
-	_ "time"
-	_ "strings"
 	"sync"
+	"strings"
 	"github.com/TarsCloud/TarsGo/tars"
 	"github.com/TarsCloud/TarsGo/tars/util/rogger"
 	log "./Logf"
+	logClient "../GoLogger/log"
 )
 
 type GoLogObj struct {}
 var once sync.Once
 var llog *rogger.Logger
 
-func initLog() {
+func init() {
 	llog = tars.GetLogger("remote_logs")
 	return
 }
 
 func (imp *GoLogObj) LoggerbyInfo(logConf *log.LogInfo, logList []string) error {
-	once.Do(initLog)
 	for _, each_log := range logList {
-		llog.Info(logConf.Appname + "." + logConf.Servername + ", " + logConf.SFilename + ": " + each_log)
+		seperator := strings.Index(each_log, "|") + 1
+		log_msg, _ := logClient.ParseLogText(each_log[seperator:])
+		llog.Infof(" - %s.%s_%s | %s | %s:%d | %s() | %s | %s",
+					logConf.Appname, logConf.Servername, logConf.SFilename,
+					log_msg.Datetime, log_msg.File, int(log_msg.Line), log_msg.Function,
+					log_msg.LevelStr, log_msg.Text)
 	}
 	return nil
 };
 
 func (imp *GoLogObj) Logger(app string, server string, file string, format string, buffer []string) error {
-	once.Do(initLog)
 	llog.Info("MARK")
 	return nil
 }
