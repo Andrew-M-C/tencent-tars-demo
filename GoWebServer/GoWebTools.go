@@ -8,7 +8,7 @@ import (
 	// "encoding/json"
 	// "github.com/TarsCloud/TarsGo/tars"
 	//log "github.com/Andrew-M-C/tencent-tars-demo/GoLogger"
-	log "amc/GoLogger"
+	"../GoLogger/log"
 )
 type HttpRequestInfo struct {
 	Ip			string
