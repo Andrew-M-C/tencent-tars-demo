@@ -9,7 +9,7 @@ import (
 	"github.com/TarsCloud/TarsGo/tars"
 	amc "amc/GoTarsServer/Amc"
 	//log "github.com/Andrew-M-C/tencent-tars-demo/GoLogger"
-	"../GoLogger/log"
+	"github.com/Andrew-M-C/tencent-tars-demo/GoLogger/log"
 )
 
 var comm *tars.Communicator

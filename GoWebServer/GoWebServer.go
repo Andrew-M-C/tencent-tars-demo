@@ -2,7 +2,7 @@ package main
 
 import (
 	"net/http"
-	"../GoLogger/log"
+	"github.com/Andrew-M-C/tencent-tars-demo/GoLogger/log"
 	"github.com/TarsCloud/TarsGo/tars"
 	"strings"
 )
@@ -11,6 +11,7 @@ type HttpHandler func(http.ResponseWriter, *HttpRequestInfo, *http.Request)
 var httpHandlers = map[string]HttpHandler {
 	"/hello-tars":	HttpHelloHandler,
 	"/tars":		HttpTarsHandler,
+	"/tars/sendmsg":	HttpTarsSendMsgHandler,
 }
 
 /**
@@ -46,7 +47,7 @@ func httpRootHandler(w http.ResponseWriter, r *http.Request) {
 	} else {
 		handler(w, info, r)
 	}
-	log.Info("== process ends ==")
+	log.Debug("== process ends ==")
 }
 
 func main() {
