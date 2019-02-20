@@ -11,6 +11,7 @@ import (
 )
 
 var kafkaTopic = "hello-tars-kafka"
+var kafkaProducer sarama.SyncProducer
 
 type kafkaMsg struct {
 	IP			string 	`json:"IP"`
@@ -36,6 +37,14 @@ func getKafkaSyncProducer() (sarama.SyncProducer, error) {
 	return sarama.NewSyncProducer(addresses, kafka_config)
 }
 
+func init() {
+	var err error
+	kafkaProducer, err = getKafkaSyncProducer()
+	if err != nil {
+		log.Error("Failed to create producer: " + err.Error())
+	}
+}
+
 func HttpTarsHandler(w http.ResponseWriter, info *HttpRequestInfo, r *http.Request) {
 	w.Header().Set("Content-Type", "application/json;charset=utf-8")
 	w.Write([]byte("{\"msg\": \"Hello, TarsGo\"}"))
@@ -44,7 +53,7 @@ func HttpTarsHandler(w http.ResponseWriter, info *HttpRequestInfo, r *http.Reque
 
 func HttpTarsSendMsgHandler(w http.ResponseWriter, info *HttpRequestInfo, r *http.Request) {
 	// analyze request
-	var producer sarama.SyncProducer
+	producer := kafkaProducer
 	var kafka_msg *sarama.ProducerMessage
 	var err error
 	ok := true
@@ -64,20 +73,17 @@ func HttpTarsSendMsgHandler(w http.ResponseWriter, info *HttpRequestInfo, r *htt
 		ret.Msg = err.Error()
 		ok = false
 	}
-
 	// get kafka producer
 	if ok {
 		kafka_msg = &sarama.ProducerMessage{
 			Topic: kafkaTopic,
 			Value: sarama.ByteEncoder(msg),
 		}
-		producer, err = getKafkaSyncProducer()
-		if err != nil {
-			ret.Msg = err.Error()
+		if nil == producer {
+			ret.Msg = "producer not initialized"
 			ok = false
 		}
 	}
-
 	// send data
 	if ok {
 		partition, offset, err := producer.SendMessage(kafka_msg)
@@ -87,7 +93,7 @@ func HttpTarsSendMsgHandler(w http.ResponseWriter, info *HttpRequestInfo, r *htt
 			ret.Msg = fmt.Sprintf("message sent, partition = %d, offset = %d", partition, offset)
 		}
 	}
-
+	// return
 	w.Header().Set("Content-Type", "application/json;charset=utf-8")
 	ret_str, _ := json.Marshal(ret)
 	w.Write([]byte(ret_str))
