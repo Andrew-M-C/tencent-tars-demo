@@ -1,3 +1,3 @@
 #!/bin/bash
-make
+# make
 ./GoKafkaConsumer --config=GoKafkaConsumer.conf
