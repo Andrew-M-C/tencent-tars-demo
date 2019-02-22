@@ -5,10 +5,8 @@ import (
 	"strings"
 	"strconv"
 	"net/http"
-	// "encoding/json"
-	// "github.com/TarsCloud/TarsGo/tars"
-	//log "github.com/Andrew-M-C/tencent-tars-demo/GoLogger"
 	"github.com/Andrew-M-C/tencent-tars-demo/GoLogger/log"
+	// log "../GoLogger/local_log"
 )
 type HttpRequestInfo struct {
 	Ip			string

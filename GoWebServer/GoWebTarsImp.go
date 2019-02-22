@@ -7,6 +7,7 @@ import (
 	"encoding/json"
 	"time"
 	"github.com/Andrew-M-C/tencent-tars-demo/GoLogger/log"
+	// log "../GoLogger/local_log"
 	"github.com/Shopify/sarama"
 )
 

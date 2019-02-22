@@ -1,3 +1,3 @@
 #!/bin/bash
-make
+# make
 ./GoWebServer --config=GoWebServer.conf

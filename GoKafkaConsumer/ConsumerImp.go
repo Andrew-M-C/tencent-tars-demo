@@ -1,4 +1,8 @@
 /**
+ * references:
+ * - [Kafka入门教程 Golang实现Kafka消息发送、接收](https://blog.csdn.net/tflasd1157/article/details/81985722)
+ * - [bsm/sarama-cluster](https://github.com/bsm/sarama-cluster/blob/master/README.md)
+ * - [golang结合Kafka消息队列实践(一)](https://blog.csdn.net/jeffrey11223/article/details/80613500)
  */
 package main
 

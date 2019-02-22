@@ -8,8 +8,8 @@ import (
 	"encoding/json"
 	"github.com/TarsCloud/TarsGo/tars"
 	amc "amc/GoTarsServer/Amc"
-	//log "github.com/Andrew-M-C/tencent-tars-demo/GoLogger"
 	"github.com/Andrew-M-C/tencent-tars-demo/GoLogger/log"
+	// log "../GoLogger/local_log"
 )
 
 var comm *tars.Communicator
@@ -52,8 +52,8 @@ func HttpHelloHandler(w http.ResponseWriter, info *HttpRequestInfo, r *http.Requ
 	// tars RPC
 	comm = tars.NewCommunicator()
 	app := new(amc.DateTime)
+	// obj := "amc.GoTarsServer.GoTarsObj@tcp -h 10.0.4.11 -p 10010"
 	obj := "amc.GoTarsServer.GoTarsObj"
-	// comm.SetProperty("locator", "tars.tarsregistry.QueryObj@tcp -h 10.0.4.11 -p 17890")
 
 	req := amc.GetTimeReq{}
 	rsp := amc.GetTimeRsp{}
