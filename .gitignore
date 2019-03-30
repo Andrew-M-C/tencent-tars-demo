@@ -1,10 +1,10 @@
 *.d
 *.o
 *.tgz
+.DS_Store
 
 # target files
 GoTarsServer/GoTarsServer
 GoWebServer/GoWebServer
 GoLogServer/GoLogServer
 GoKafkaConsumer/GoKafkaConsumer
-vendor
