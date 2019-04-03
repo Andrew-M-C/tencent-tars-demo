@@ -1,5 +1,6 @@
 // login.js
 document.write("<script type='text/javascript' src='/js/sha256.js'></script>");
+document.write("<script type='text/javascript' src='/js/tools.js'></script>");
 
 $(document).ready(function(){
 
@@ -52,13 +53,21 @@ $(document).ready(function(){
                 contentType: 'application/json;charset=UTF-8',
                 data:JSON.stringify(param),
                 success: function (msg) {
+                    btn_submit.prop('disabled', false);
+                    input_user.prop('disabled', false);
+                    input_pass.prop('disabled', false);
+
                     if (msg.code != 0) {
                         alert(msg.msg)
-                        btn_submit.prop('disabled', false);
-                        input_user.prop('disabled', false);
-                        input_pass.prop('disabled', false);
                     } else {
-                        window.location.href="/html/success.html";
+                        redirectUrl = getQueryVariable("redirect_url");
+                        if (redirectUrl) {
+                            // console.log("redirect_url: " + redirectUrl)
+                            redirectUrl = redirectUrl.replace("http://", "https://")
+                            window.location.href = redirectUrl;
+                        } else {
+                            window.location.href="/html/success.html";
+                        }
                     }
                 },
                 error:function(XMLHttpRequest, textStatus){

@@ -44,10 +44,15 @@ func main() {
 	}
 
 	http.HandleFunc("/", httpstatic.RootHandler)
+	http.HandleFunc("/favicon.ico", httpstatic.HtmlHandler)
 	http.HandleFunc("/html/", httpstatic.HtmlHandler)
 	http.HandleFunc("/js/", httpstatic.JsHandler)
-	http.HandleFunc("/cgi-bin/", httpdynamic.LoginHandler)
+	http.HandleFunc("/cgi-bin/login", httpdynamic.LoginHandler)
+	http.HandleFunc("/cgi-bin/logout", httpdynamic.LogoutHandler)
+	http.HandleFunc("/cgi-bin/validate", httpdynamic.TicketValidateHandler)
 	http.HandleFunc("/html/success.html", httpdynamic.SuccessHandler)
+	// http.HandleFunc("/img/qr/", httpdynamic.QRImageHandler)
+
 	http.ListenAndServe(":4000", nil)
 	log.Info("process %d quit", pid)
 	return

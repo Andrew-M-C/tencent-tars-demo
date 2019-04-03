@@ -1,14 +1,14 @@
 package httpparser
 import (
-	// "github.com/Andrew-M-C/go-tools/log"
+	"github.com/Andrew-M-C/go-tools/log"
+	"fmt"
 	"net/http"
-	// "fmt"
 	"strconv"
 	"strings"
 )
 
 type HttpRequestInfo struct {
-	Ip			string
+	IP			string
 	Port		int
 	Host		string
 	Url			string
@@ -22,7 +22,7 @@ func GetHttpRequestInfo(r *http.Request) *HttpRequestInfo {
 	info.Query  = make(map[string]string)
 
 	// IP and port
-	info.Ip = r.Header.Get("X-Real-IP")
+	info.IP = r.Header.Get("X-Real-IP")
 	port_str := r.Header.Get("X-Real-Port")
 	port, err := strconv.Atoi(port_str)
 	if nil != err {
@@ -51,7 +51,7 @@ func GetHttpRequestInfo(r *http.Request) *HttpRequestInfo {
 	// query param
 	r.ParseForm()
 	for key, value := range r.Form {
-		// log.Debug(fmt.Sprintf("param [%s] - %s", key, value[0]))
+		log.Debug(fmt.Sprintf("param [%s] - %s", key, value[0]))
 		info.Query[key] = value[0]
 	}
 

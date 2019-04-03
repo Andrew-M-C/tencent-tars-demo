@@ -26,7 +26,7 @@ func init() {
 		return
 	}
 	conf_str := string(conf_bytes)
-	log.Info("Configuration: >> %s <<", conf_str)
+	// log.Info("Configuration: >> %s <<", conf_str)
 	appConf, err = jsonconv.NewFromString(conf_str)
 	if err != nil {
 		log.Error("Unmarshal config file failed: %s", err.Error())
